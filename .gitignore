@@ -1,0 +1,3 @@
+prng-xorshift
+*.o
+*.d
