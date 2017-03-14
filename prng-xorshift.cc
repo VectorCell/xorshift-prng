@@ -38,6 +38,7 @@ void write_random(FILE *outfile, bool hex = false) {
 	vector<uint32_t> state(4);
 	vector<uint32_t> buffer(4096 / sizeof(uint32_t));
 	memcpy(&state[0], &t, min(sizeof(t), 4 * sizeof(uint32_t)));
+	char *hexstr = "00000000 ";
 	while (!stopped) {
 		for (size_t k = 0; k < buffer.size(); ++k) {
 			buffer[k] = xorshift128(state);
@@ -45,9 +46,10 @@ void write_random(FILE *outfile, bool hex = false) {
 		if (hex) {
 			for (size_t k = 0; k < sizeof(buffer); k += LINESIZE) {
 				for (size_t j = k; j < k + LINESIZE; ++j) {
-					printf("%08x ", buffer[j]);
+					sprintf(hexstr, "%08x ", buffer[j]);
+					fputs(hexstr, outfile);
 				}
-				printf("\n");
+				putc('\n', outfile);
 			}
 		} else {
 			fwrite(&buffer[0], sizeof(char), sizeof(uint32_t) * buffer.size(), outfile);
@@ -58,6 +60,6 @@ void write_random(FILE *outfile, bool hex = false) {
 int main(int argc,char *argv[]) {
 	signal(SIGINT,  sig_handler);
 	signal(SIGTERM, sig_handler);
-	write_random(stdout, isatty(fileno(stdout)));
+	write_random(stdout, true || isatty(fileno(stdout)));
 	return EXIT_SUCCESS;
 }

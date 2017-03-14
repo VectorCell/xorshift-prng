@@ -1,3 +1,6 @@
+# this is due to the clean-tempfiles needing to happen after prng-xorshift
+.NOTPARALLEL: all
+
 CSTD   := c11
 CPPSTD := c++11
 
@@ -13,7 +16,7 @@ CFLAGS   := -pedantic -std=$(CSTD) -Wall -Werror -O3
 CPPFLAGS := -pedantic -std=$(CPPSTD) -Wall -Werror -O3
 LIBFLAGS  := 
 
-all : prng-xorshift
+all : prng-xorshift clean-tempfiles
 
 prng-xorshift : prng-xorshift.o
 	$(CXX) $(CPPFLAGS) -o prng-xorshift prng-xorshift.o $(LIBFLAGS)
@@ -36,9 +39,10 @@ install:
 uninstall:
 	./uninstall.sh
 
-clean :
-	rm -f *.d
-	rm -f *.o
+clean-tempfiles :
+	rm -f *.d *.o
+
+clean : clean-tempfiles
 	rm -f prng-xorshift
 
 -include *.d
