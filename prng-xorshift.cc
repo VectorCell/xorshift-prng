@@ -36,8 +36,6 @@ uint32_t xorshift128(vector<uint32_t>& state) {
 void write_random(FILE *outfile, bool hex = false) {
 	time_t t = time(NULL);
 	vector<uint32_t> state(4);
-	//cout << "sizeof(t) = " << sizeof(t) << endl;
-	//cout << "sizeof(state) = " << (4 * sizeof(uint32_t)) << endl;
 	vector<uint32_t> buffer(4096 / sizeof(uint32_t));
 	memcpy(&state[0], &t, min(sizeof(t), 4 * sizeof(uint32_t)));
 	while (!stopped) {
